@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: todo-app-svc
 spec:
-  type: NodePort # This should be the only unfamiliar part
+  type: NodePort
   selector:
     app: todo-app
   ports:
     - port: 80
       protocol: TCP
-      targetPort: 3001
+      targetPort: 8080

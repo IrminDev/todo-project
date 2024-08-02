@@ -5,10 +5,12 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: dwk-cluster
-  GKE_ZONE: europe-north1-b
-  IMAGE: dwk-environments
-  DEPLOYMENT: dwk-environments
+  GKE_CLUSTER: kube-cluster
+  GKE_ZONE: southamerica-west1-a
+  IMAGE1: todo-app
+  IMAGE2: todo-backend
+  DEPLOYMENT1: todo-app
+  DEPLOYMENT2: todo-backend
   BRANCH: ${{ github.ref_name }}
 
 jobs:
@@ -39,17 +41,24 @@ jobs:
           project_id: '${{ env.PROJECT_ID }}'
           location: '${{ env.GKE_ZONE }}'
 
-      - name: Build and publish
+      - name: Build and publish app
         run: |-
-          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA" .
-          docker push "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA"
+          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE1:$BRANCH-$GITHUB_SHA" todo-app/
+          docker push "gcr.io/$PROJECT_ID/$IMAGE1:$BRANCH-$GITHUB_SHA"
+
+      - name: Build and publish backend
+        run: |-
+          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE2:$BRANCH-$GITHUB_SHA" todo-backend/
+          docker push "gcr.io/$PROJECT_ID/$IMAGE2:$BRANCH-$GITHUB_SHA"
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
       - name: Deploy
         run: |-
-          kustomize edit set image PROJECT/IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
+          kustomize edit set image PROJECT/IMAGE1=gcr.io/$PROJECT_ID/$IMAGE1:$BRANCH-$GITHUB_SHA
+          kustomize edit set image PROJECT/IMAGE2=gcr.io/$PROJECT_ID/$IMAGE2:$BRANCH-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment $DEPLOYMENT
+          kubectl rollout status deployment $DEPLOYMENT1
+          kubectl rollout status deployment $DEPLOYMENT2
           kubectl get services -o wide

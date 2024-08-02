@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests/manisfests-backend/deployment.yaml
+  - manifests/manisfests-backend/service.yaml
+  - manifests/manisfests-backend/secret.yaml
+  - manifests/manisfests-backend/statefulset.yaml
+  - manifests/manisfests-app/deployment.yaml
+  - manifests/manisfests-app/service.yaml
+  - manifests/manisfests-app/ingress.yaml
+images:
+  - name: PROJECT/IMAGE1
+  - name: PROJECT/IMAGE2
