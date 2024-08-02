@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      containers:
+        - name: todo-app
+          image: irmindev/todo-app:latest
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "8080"
+            - name: BACKEND_URL
+              value: "http://todo-backend-svc.default.svc.cluster.local:3456"
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+                path: /
+                port: 8080
+          readinessProbe:
+              httpGet:
+                  path: /
+                  port: 8080

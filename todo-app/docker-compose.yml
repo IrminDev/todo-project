@@ -1,0 +1,50 @@
+services:
+  todo-app:
+    image: todo-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./public:/usr/src/app/public
+      - ./mvnw:/usr/src/app/mvnw
+      - ./.mvn:/usr/src/app/.mvn
+      - ./pom.xml:/usr/src/app/pom.xml
+    environment:
+      - PORT=8080
+      - BACKEND_URL=http://todo-backend:8000
+    container_name: todo-app
+
+  todo-backend:
+    image: todo-backend:latest
+    build:
+      context: ../todo-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../todo-backend/src:/usr/src/app/src
+      - ../todo-backend/public:/usr/src/app/public
+      - ../todo-backend/gradle:/usr/src/app/gradle
+      - ../todo-backend/.gradle:/usr/src/app/.gradle
+      - ../todo-backend/build.gradle:/usr/src/app/build.gradle
+      - ../todo-backend/todos.txt:/usr/src/app/todos.txt
+    environment:
+      - PORT=8000
+      - DATABASE_URL=jdbc:postgresql://db:5432/todo-app
+      - DATABASE_USERNAME=irmindev
+      - DATABASE_PASSWORD=PostgresPassword
+    container_name: todo-backend
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15.7-bullseye
+    environment:
+      POSTGRES_USER: irmindev
+      POSTGRES_PASSWORD: PostgresPassword
+      POSTGRES_DB: todo-app
+    ports:
+      - "5432:5432"
