@@ -22,12 +22,13 @@ public class TodoController {
     @RequestMapping("/")
     public String showHomePage(Model model) {
         RestTemplate restTemplate = new RestTemplate();
+        List todos = List.of();
         try {
             ResponseEntity<List> response = restTemplate.getForEntity(backendUrl + "/todos", List.class);
-            List todos = response.getBody();
+            todos = response.getBody();
             model.addAttribute("todos", todos);
         } catch (Exception e) {
-            model.addAttribute("todos", List.of());
+            System.out.println("Error: " + e.getMessage());
         }
         
         model.addAttribute("todos", todos);
