@@ -22,8 +22,13 @@ public class TodoController {
     @RequestMapping("/")
     public String showHomePage(Model model) {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<List> response = restTemplate.getForEntity(backendUrl + "/todos", List.class);
-        List<Map<String, String>> todos = response.getBody();
+        try {
+            ResponseEntity<List> response = restTemplate.getForEntity(backendUrl + "/todos", List.class);
+            List todos = response.getBody();
+            model.addAttribute("todos", todos);
+        } catch (Exception e) {
+            model.addAttribute("todos", List.of());
+        }
         
         model.addAttribute("todos", todos);
         model.addAttribute("imageUrl", "/image");
