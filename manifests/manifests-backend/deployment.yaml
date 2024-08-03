@@ -33,7 +33,3 @@ spec:
                   key: POSTGRES_PASSWORD
           ports:
             - containerPort: 8000
-          resources:
-            limits:
-              cpu: "500m"
-              memory: "800Mi"
