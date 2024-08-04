@@ -33,6 +33,18 @@ spec:
                   key: POSTGRES_PASSWORD
           ports:
             - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
           resources:
             limits:
               memory: "800Mi"
