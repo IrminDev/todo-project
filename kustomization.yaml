@@ -6,7 +6,7 @@ resources:
   - manifests/manifests-backend/service.yaml
   - manifests/manifests-backend/secret.yaml
   - manifests/manifests-backend/statefulset.yaml
-  - manifests/manifests-app/rollout.yaml
+  - manifests/manifests-app/deployment.yaml
   - manifests/manifests-app/service.yaml
   - manifests/manifests-app/ingress.yaml
 images:
