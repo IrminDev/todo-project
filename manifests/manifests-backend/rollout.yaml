@@ -11,11 +11,9 @@ spec:
     canary:
       steps:
       - setWeight: 50
-      - pause:
-          duration: 30s
-      - setWeight: 50
-      - pause:
-          duration: 30s
+      - analysis:
+          templates:
+          - templateName: restart-rate
   template:
     metadata:
       labels:
@@ -54,10 +52,3 @@ spec:
               port: 8000
             initialDelaySeconds: 30
             periodSeconds: 10
-      strategy:
-        canary:
-          steps:
-          - setWeight: 50
-          - analysis:
-              templates:
-              - templateName: restart-rate
