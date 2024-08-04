@@ -29,4 +29,16 @@ public class TodoController {
         System.out.println("Todo is valid: " + todo.getTodo());
         return todoRepository.save(todo);
     }
+
+    @PutMapping("/{id}")
+    public Todo doneTodo(@PathVariable Long id) {
+        Todo todo = todoRepository.findById(id).orElse(null);
+        if(todo == null) {
+            System.out.println("Todo not found");
+            return null;
+        }
+
+        todo.setDone(true);
+        return todoRepository.save(todo);
+    }
 }

@@ -1,4 +1,4 @@
-package com.github.irmindev.controller;
+package com.github.irmindev.todo_app.controller;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
 
-import com.github.irmindev.service.CacheService;
+import com.github.irmindev.todo_app.service.CacheService;
 
 @Controller
 public class ImageController {

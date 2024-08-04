@@ -1,4 +1,4 @@
-package com.github.irmindev.service;
+package com.github.irmindev.todo_app.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;

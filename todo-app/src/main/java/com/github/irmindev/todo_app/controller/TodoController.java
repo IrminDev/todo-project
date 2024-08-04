@@ -1,4 +1,4 @@
-package com.github.irmindev.controller;
+package com.github.irmindev.todo_app.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
+import com.github.irmindev.todo_app.model.Todo;
 
 import java.util.List;
 import java.util.Map;
@@ -22,16 +23,14 @@ public class TodoController {
     @RequestMapping("/")
     public String showHomePage(Model model) {
         RestTemplate restTemplate = new RestTemplate();
-        List todos = List.of();
         try {
             ResponseEntity<List> response = restTemplate.getForEntity(backendUrl + "/todos", List.class);
-            todos = response.getBody();
+            List<Todo> todos = response.getBody();
             model.addAttribute("todos", todos);
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            model.addAttribute("todos", List.of());
         }
         
-        model.addAttribute("todos", todos);
         model.addAttribute("imageUrl", "/image");
         return "index";
     }
@@ -39,7 +38,10 @@ public class TodoController {
     @PostMapping("/addTodo")
     public String addTodo(@RequestParam("inputField") String todo) {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForEntity(backendUrl + "/todos", Map.of("todo", todo), Void.class);
+        Todo newTodo = new Todo();
+        newTodo.setTodo(todo);
+        newTodo.setDone(false);
+        restTemplate.postForObject(backendUrl + "/todos", newTodo, Todo.class);
         return "redirect:/";
     }
 }
