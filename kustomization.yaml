@@ -1,11 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - manifests/manifests-backend/deployment.yaml
+  - manifests/manifests-backend/rollout.yaml
   - manifests/manifests-backend/service.yaml
   - manifests/manifests-backend/secret.yaml
   - manifests/manifests-backend/statefulset.yaml
-  - manifests/manifests-app/deployment.yaml
+  - manifests/manifests-app/rollout.yaml
   - manifests/manifests-app/service.yaml
   - manifests/manifests-app/ingress.yaml
 images:
