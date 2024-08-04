@@ -5,8 +5,8 @@ metadata:
 spec:
   metrics:
   - name: restart-rate
-    initialDelay: 2m
-    successCondition: result < 0.05
+    initialDelay: 5m
+    successCondition: result < 0.4
     provider:
       prometheus:
         address: http://kube-prometheus-stack-1722-prometheus.prometheus.svc.cluster.local:9090 # DNS name for my Prometheus, find yours with kubectl describe svc ...
