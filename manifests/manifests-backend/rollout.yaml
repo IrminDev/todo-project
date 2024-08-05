@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: PROJECT/IMAGE2
+          image: irmindev/todo-backend
           imagePullPolicy: IfNotPresent
           env:
             - name: PORT
@@ -38,6 +38,16 @@ spec:
                 secretKeyRef:
                   name: postgres-credentials
                   key: POSTGRES_PASSWORD
+            - name: NATS_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: nats-credentials
+                  key: NATS_SERVER
+            - name: NATS_SUBJECT
+              valueFrom:
+                secretKeyRef:
+                  name: nats-credentials
+                  key: NATS_SUBJECT
           ports:
             - containerPort: 8000
           livenessProbe:

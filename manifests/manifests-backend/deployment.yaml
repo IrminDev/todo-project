@@ -14,8 +14,7 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: PROJECT/IMAGE2
-          imagePullPolicy: IfNotPresent
+          image: irmindev/todo-backend:1.2
           env:
             - name: PORT
               value: "8000"
@@ -31,21 +30,29 @@ spec:
                 secretKeyRef:
                   name: postgres-credentials
                   key: POSTGRES_PASSWORD
+            - name: NATS_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: nats-credentials
+                  key: NATS_SERVER
+            - name: NATS_SUBJECT
+              valueFrom:
+                secretKeyRef:
+                  name: nats-credentials
+                  key: NATS_SUBJECT
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
           livenessProbe:
             httpGet:
               path: /health
               port: 8000
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            initialDelaySeconds: 180
+            periodSeconds: 20
           readinessProbe:
             httpGet:
               path: /health
               port: 8000
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          resources:
-            limits:
-              memory: "800Mi"
+            initialDelaySeconds: 60
+            periodSeconds: 20
               
