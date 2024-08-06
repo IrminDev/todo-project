@@ -33,21 +33,18 @@ public class App {
                 String response = new String(msg.getData(), StandardCharsets.UTF_8);
                 System.out.println("Message received:" + response);
 
-                try {
-                    DiscordWebhook webhook = new DiscordWebhook(discordWebhookUrl);
-                    webhook.setContent("A new todo:" + response);
-                    webhook.setAvatarUrl("https://avatars.githubusercontent.com/u/78762447?s=400&u=5e2a40972282425a80b884c5802a87900b6431a0&v=4");
-                    webhook.setUsername("IrminDev");
-                    webhook.setTts(true);
-                    webhook.addEmbed(new DiscordWebhook.EmbedObject()
-                            .setTitle("New todo!")
-                            .setDescription("A new todo has been added!")
-                            .setColor(Color.green));
-                    webhook.execute(); //Handle exception
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if(discordWebhookUrl != null) {
+                    DiscordWebhook discordWebhook = new DiscordWebhook(discordWebhookUrl);
+                    discordWebhook.setContent(response);
+                    discordWebhook.setAvatarUrl("https://i.imgur.com/8Ikjw8W.png");
+                    discordWebhook.setUsername("NATS Broadcaster");
+                    discordWebhook.setTts(false);
+                    discordWebhook.addEmbed(new DiscordWebhook.EmbedObject()
+                        .setTitle("NATS Broadcaster")
+                        .setDescription(response)
+                        .setColor(Color.GREEN));
+                    discordWebhook.execute();
                 }
-
             });
 
         } catch (Exception e) {

@@ -55,4 +55,3 @@ spec:
               port: 8000
             initialDelaySeconds: 60
             periodSeconds: 20
-              

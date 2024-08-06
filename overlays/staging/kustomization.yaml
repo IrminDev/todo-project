@@ -1,0 +1,12 @@
+namespace: staging
+
+resources:
+  - ./../../base
+
+patchesStrategicMerge:
+  - deployment.yaml
+
+images:
+  - name: PROJECT/IMAGE1
+  - name: PROJECT/IMAGE2
+  - name: PROJECT/IMAGE3

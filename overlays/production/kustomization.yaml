@@ -1,0 +1,15 @@
+namespace: production
+
+resources:
+  - ./../../base
+  - cronjob.yaml
+  - persistentVolumeClaim.yaml
+  - persistentVolume.yaml
+
+patchesStrategicMerge:
+  - deployment.yaml
+
+images:
+  - name: PROJECT/IMAGE1
+  - name: PROJECT/IMAGE2
+  - name: PROJECT/IMAGE3

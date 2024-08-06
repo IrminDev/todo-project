@@ -1,74 +1,74 @@
-name: Release application
+name: Build and publish application
 
 on:
   push:
-
-env:
-  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: kube-cluster
-  GKE_ZONE: southamerica-west1-a
-  IMAGE1: todo-app
-  IMAGE2: todo-backend
-  DEPLOYMENT1: todo-app
-  DEPLOYMENT2: todo-backend
-  BRANCH: ${{ github.ref_name }}
+    branches:
+      - main
+    tags:
+      - '*'
 
 jobs:
-  build-publish-deploy:
-    name: Build, Publish and Deploy
+  build-publish:
+    name: Build, Push, Release
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: google-github-actions/auth@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          credentials_json: '${{ secrets.GKE_SA_KEY }}'
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 'Set up Cloud SDK'
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: 'Use gcloud CLI'
-        run: gcloud info
-
-      - run: gcloud --quiet auth configure-docker
-
-      - name: 'Get GKE credentials'
-        uses: 'google-github-actions/get-gke-credentials@v2'
-        with:
-          cluster_name: '${{ env.GKE_CLUSTER }}'
-          project_id: '${{ env.PROJECT_ID }}'
-          location: '${{ env.GKE_ZONE }}'
-
-      - name: Build and publish app
+      # tag image with the GitHub SHA to get a unique tag
+      - name: Build and publish todo-app
         run: |-
-          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE1:$BRANCH-$GITHUB_SHA" todo-app/
-          docker push "gcr.io/$PROJECT_ID/$IMAGE1:$BRANCH-$GITHUB_SHA"
+          docker build --tag "irmindev/todo-app:$GITHUB_SHA" todo-app/
+          docker push "irmindev/todo-app:$GITHUB_SHA"
 
-      - name: Build and publish backend
+      - name: Build and publish log server
         run: |-
-          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE2:$BRANCH-$GITHUB_SHA" todo-backend/
-          docker push "gcr.io/$PROJECT_ID/$IMAGE2:$BRANCH-$GITHUB_SHA"
+          docker build --tag "irmindev/todo-backend:$GITHUB_SHA" todo-backend/
+          docker push "irmindev/todo-backend:$GITHUB_SHA"
+
+      - name: Build and publish ping pong app
+        run: |-
+          docker build --tag "irmindev/todo-broadcaster:$GITHUB_SHA" todo-broadcaster/
+          docker push "irmindev/todo-broadcaster:$GITHUB_SHA"
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
-      - name: Deploy
+      # Update kustomization.yaml for staging
+      - name: Use right images for staging
+        working-directory: overlays/staging
         run: |-
-          BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          if [ "$BRANCH_NAME" == "main" ]; then
-            NAMESPACE="default"
-          else
-            NAMESPACE=$BRANCH_NAME
-          fi
+            kustomize edit set image PROJECT/IMAGE1=irmindev/log-output:$GITHUB_SHA
+            kustomize edit set image PROJECT/IMAGE2=irmindev/log-writer:$GITHUB_SHA
+            kustomize edit set image PROJECT/IMAGE3=irmindev/ping-pong:$GITHUB_SHA
 
-          kubectl create namespace $NAMESPACE || true
-          kubectl config set-context --current --namespace=$NAMESPACE
-          kustomize edit set namespace $NAMESPACE
-          kustomize edit set image PROJECT/IMAGE1=gcr.io/$PROJECT_ID/$IMAGE1:$BRANCH-$GITHUB_SHA
-          kustomize edit set image PROJECT/IMAGE2=gcr.io/$PROJECT_ID/$IMAGE2:$BRANCH-$GITHUB_SHA
-          kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment/$DEPLOYMENT1
-          kubectl rollout status deployment/$DEPLOYMENT2
-          kubectl get services -o wide
+      # Commit changes to kustomization.yaml for staging
+      - name: Commit kustomization.yaml for staging to GitHub
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'overlays/staging/kustomization.yaml'
+          message: New version released for staging ${{ github.sha }}
+
+      # Update kustomization.yaml for production
+      - name: Use right images for production
+        if: startsWith(github.ref, 'refs/tags/')
+        working-directory: overlays/production
+        run: |-
+            kustomize edit set image PROJECT/IMAGE1=irmindev/log-output:$GITHUB_SHA
+            kustomize edit set image PROJECT/IMAGE2=irmindev/log-writer:$GITHUB_SHA
+            kustomize edit set image PROJECT/IMAGE3=irmindev/ping-pong:$GITHUB_SHA
+
+      # Commit changes to kustomization.yaml for production
+      - name: Commit kustomization.yaml for production to GitHub
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'overlays/production/kustomization.yaml'
+          message: New version released for production ${{ github.sha }}
