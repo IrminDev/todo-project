@@ -1,9 +1,9 @@
-name: Build and publish application (main)
+name: Build and publish application (tag)
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 jobs:
   build-publish:
@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -25,12 +27,12 @@ jobs:
           docker build --tag "irmindev/todo-app:$GITHUB_SHA" todo-app/
           docker push "irmindev/todo-app:$GITHUB_SHA"
 
-      - name: Build and publish log server
+      - name: Build and publish todo backend
         run: |-
           docker build --tag "irmindev/todo-backend:$GITHUB_SHA" todo-backend/
           docker push "irmindev/todo-backend:$GITHUB_SHA"
 
-      - name: Build and publish ping pong app
+      - name: Build and publish todo broadcaster
         run: |-
           docker build --tag "irmindev/todo-broadcaster:$GITHUB_SHA" todo-broadcaster/
           docker push "irmindev/todo-broadcaster:$GITHUB_SHA"
@@ -38,15 +40,15 @@ jobs:
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
-      - name: Use right images for staging
-        working-directory: overlays/staging
+      - name: Use right images for production
+        working-directory: overlays/production
         run: |-
             kustomize edit set image PROJECT/IMAGE1=irmindev/log-output:$GITHUB_SHA
             kustomize edit set image PROJECT/IMAGE2=irmindev/log-writer:$GITHUB_SHA
             kustomize edit set image PROJECT/IMAGE3=irmindev/ping-pong:$GITHUB_SHA
 
-      - name: Commit kustomization.yaml for staging to GitHub
+      - name: Commit kustomization.yaml for production to GitHub
         uses: EndBug/add-and-commit@v9
         with:
-          add: 'overlays/staging/kustomization.yaml'
-          message: New version released for staging ${{ github.sha }}
+          add: 'overlays/production/kustomization.yaml'
+          message: New version released for production ${{ github.sha }}
