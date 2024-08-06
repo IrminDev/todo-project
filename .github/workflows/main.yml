@@ -72,5 +72,5 @@ jobs:
         with:
           add: 'overlays/production/kustomization.yaml'
           pull: --rebase
-          push: origin main --force
+          push: origin main --set-upstream --force
           message: New version released for production ${{ github.sha }}
