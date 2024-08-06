@@ -9,12 +9,12 @@ patchesStrategicMerge:
 images:
 - name: PROJECT/IMAGE1
   newName: irmindev/todo-app
-  newTag: bbd3215e5294f85376ece4cb1664ccd2a3e877b6
+  newTag: 525086ad038c155e447958f9ee8b17b09e5a954c
 - name: PROJECT/IMAGE2
   newName: irmindev/todo-backend
-  newTag: bbd3215e5294f85376ece4cb1664ccd2a3e877b6
+  newTag: 525086ad038c155e447958f9ee8b17b09e5a954c
 - name: PROJECT/IMAGE3
   newName: irmindev/todo-broadcaster
-  newTag: bbd3215e5294f85376ece4cb1664ccd2a3e877b6
+  newTag: 525086ad038c155e447958f9ee8b17b09e5a954c
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
