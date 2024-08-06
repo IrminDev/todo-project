@@ -36,7 +36,7 @@ spec:
         - name: todo-backend
           env:
             - name: DATABASE_URL
-              value: "jdbc:postgresql://postgres-svc.production.svc.cluster.local:5432/todo-app"
+              value: "jdbc:postgresql://postgres-todo-svc.production.svc.cluster.local:5432/todo-app"
 ---
 apiVersion: apps/v1
 kind: Deployment
