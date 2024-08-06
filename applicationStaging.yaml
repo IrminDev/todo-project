@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/mluukkai/gitopstest
+    repoURL: https://github.com/IrminDev/todo-project
     path: overlays/staging
     targetRevision: HEAD
   destination:

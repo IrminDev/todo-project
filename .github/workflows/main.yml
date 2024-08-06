@@ -41,12 +41,13 @@ jobs:
       - name: Use right images for staging
         working-directory: overlays/staging
         run: |-
-            kustomize edit set image PROJECT/IMAGE1=irmindev/log-output:$GITHUB_SHA
-            kustomize edit set image PROJECT/IMAGE2=irmindev/log-writer:$GITHUB_SHA
-            kustomize edit set image PROJECT/IMAGE3=irmindev/ping-pong:$GITHUB_SHA
+            kustomize edit set image PROJECT/IMAGE1=irmindev/todo-app:$GITHUB_SHA
+            kustomize edit set image PROJECT/IMAGE2=irmindev/todo-backend:$GITHUB_SHA
+            kustomize edit set image PROJECT/IMAGE3=irmindev/todo-broadcaster:$GITHUB_SHA
 
       - name: Commit kustomization.yaml for staging to GitHub
         uses: EndBug/add-and-commit@v9
         with:
           add: 'overlays/staging/kustomization.yaml'
+          pull: --rebase
           message: New version released for staging ${{ github.sha }}
