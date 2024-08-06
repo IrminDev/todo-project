@@ -71,4 +71,5 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           add: 'overlays/production/kustomization.yaml'
+          tag: ${{ github.event.release.tag_name }} --force
           message: New version released for production ${{ github.sha }}
