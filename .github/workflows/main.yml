@@ -50,4 +50,3 @@ jobs:
         with:
           add: 'overlays/staging/kustomization.yaml'
           message: New version released for staging ${{ github.sha }}
-          pull: --rebase
