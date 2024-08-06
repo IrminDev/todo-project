@@ -54,6 +54,7 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           add: 'overlays/staging/kustomization.yaml'
+          push: origin main --set-upstream --force
           message: New version released for staging ${{ github.sha }}
 
       # Update kustomization.yaml for production
