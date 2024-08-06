@@ -1,15 +1,23 @@
 namespace: production
 
 resources:
-  - ./../../base
-  - cronjob.yaml
-  - persistentVolumeClaim.yaml
-  - persistentVolume.yaml
+- ./../../base
+- cronjob.yaml
+- persistentVolumeClaim.yaml
+- persistentVolume.yaml
 
 patchesStrategicMerge:
-  - deployment.yaml
+- deployment.yaml
 
 images:
-  - name: PROJECT/IMAGE1
-  - name: PROJECT/IMAGE2
-  - name: PROJECT/IMAGE3
+- name: PROJECT/IMAGE1
+  newName: irmindev/log-output
+  newTag: 7d889edae2dcd8ffc08ce1ccd48a3f768e498f4c
+- name: PROJECT/IMAGE2
+  newName: irmindev/log-writer
+  newTag: 7d889edae2dcd8ffc08ce1ccd48a3f768e498f4c
+- name: PROJECT/IMAGE3
+  newName: irmindev/ping-pong
+  newTag: 7d889edae2dcd8ffc08ce1ccd48a3f768e498f4c
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
