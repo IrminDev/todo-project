@@ -9,12 +9,12 @@ patchesStrategicMerge:
 images:
 - name: PROJECT/IMAGE1
   newName: irmindev/log-output
-  newTag: fcd6e8e0933ecaf0b4a5e3cbd922733a124aee80
+  newTag: 1dd2714edf831ed7d5bf2cd4ff178706f7a31d3b
 - name: PROJECT/IMAGE2
   newName: irmindev/log-writer
-  newTag: fcd6e8e0933ecaf0b4a5e3cbd922733a124aee80
+  newTag: 1dd2714edf831ed7d5bf2cd4ff178706f7a31d3b
 - name: PROJECT/IMAGE3
   newName: irmindev/ping-pong
-  newTag: fcd6e8e0933ecaf0b4a5e3cbd922733a124aee80
+  newTag: 1dd2714edf831ed7d5bf2cd4ff178706f7a31d3b
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
