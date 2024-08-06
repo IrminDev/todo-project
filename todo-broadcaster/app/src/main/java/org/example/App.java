@@ -34,16 +34,20 @@ public class App {
                 System.out.println("Message received:" + response);
 
                 if(discordWebhookUrl != null) {
-                    DiscordWebhook discordWebhook = new DiscordWebhook(discordWebhookUrl);
-                    discordWebhook.setContent(response);
-                    discordWebhook.setAvatarUrl("https://i.imgur.com/8Ikjw8W.png");
-                    discordWebhook.setUsername("NATS Broadcaster");
-                    discordWebhook.setTts(false);
-                    discordWebhook.addEmbed(new DiscordWebhook.EmbedObject()
-                        .setTitle("NATS Broadcaster")
-                        .setDescription(response)
-                        .setColor(Color.GREEN));
-                    discordWebhook.execute();
+                    try{
+                        DiscordWebhook discordWebhook = new DiscordWebhook(discordWebhookUrl);
+                        discordWebhook.setContent(response);
+                        discordWebhook.setAvatarUrl("https://i.imgur.com/8Ikjw8W.png");
+                        discordWebhook.setUsername("NATS Broadcaster");
+                        discordWebhook.setTts(false);
+                        discordWebhook.addEmbed(new DiscordWebhook.EmbedObject()
+                            .setTitle("NATS Broadcaster")
+                            .setDescription(response)
+                            .setColor(Color.GREEN));
+                        discordWebhook.execute();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
