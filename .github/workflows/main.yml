@@ -51,11 +51,12 @@ jobs:
 
       # Commit changes to kustomization.yaml for staging
       - name: Commit kustomization.yaml for staging to GitHub
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: 'overlays/staging/kustomization.yaml'
-          push: origin main --set-upstream --force
-          message: New version released for staging ${{ github.sha }}
+        run: |-
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add overlays/staging/kustomization.yaml
+          git commit -m "New version released for staging ${{ github.sha }}"
+          git push origin main
 
       # Update kustomization.yaml for production
       - name: Use right images for production
@@ -69,9 +70,10 @@ jobs:
       # Commit changes to kustomization.yaml for production
       - name: Commit kustomization.yaml for production to GitHub
         if: startsWith(github.ref, 'refs/tags/')
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: 'overlays/production/kustomization.yaml'
-          pull: --rebase
-          push: origin main --set-upstream --force
-          message: New version released for production ${{ github.sha }}
+        run: |-
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add overlays/production/kustomization.yaml
+          git commit -m "New version released for production ${{ github.sha }}"
+          git pull --rebase origin main
+          git push origin main
